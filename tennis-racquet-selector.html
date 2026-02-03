@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Racquet Selector - Find Your Perfect Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .decision-tree {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .level-section {
+            margin-bottom: 40px;
+        }
+
+        .level-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .level-header h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .criteria-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .criterion {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .criterion strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .recommendation-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+
+        .recommendation-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .recommendation-card h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .spec-item {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .spec-value {
+            color: #1a202c;
+            font-size: 1.1em;
+        }
+
+        .best-for {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 12px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 10px 5px 10px 0;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .flowchart {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        .flow-node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-node.question {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .flow-node.answer {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .brand-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .brand-card:hover {
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .brand-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .rating {
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question h3 {
+            color: #1a202c;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #e0e7ff;
+        }
+
+        .quiz-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .quiz-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .quiz-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .result-box h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎾 Tennis Racquet Selector</h1>
+            <p>Find Your Perfect Match in 3 Simple Steps</p>
+        </header>
+
+        <div class="content">
+            <div class="tab-navigation">
+                <button class="tab-button active" onclick="showTab('quiz')">Quick Quiz</button>
+                <button class="tab-button" onclick="showTab('guide')">Player Guide</button>
+                <button class="tab-button" onclick="showTab('comparison')">Brand Comparison</button>
+                <button class="tab-button" onclick="showTab('specs')">Detailed Specs</button>
+            </div>
+
+            <!-- Quick Quiz Tab -->
+            <div id="quiz" class="tab-content active">
+                <div class="quiz-container">
+                    <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Find Your Perfect Racquet</h2>
+                    
+                    <div id="quizQuestions">
+                        <div class="quiz-question">
+                            <h3>1. What's your playing experience?</h3>
+                            <div class="quiz-options">
+                                <div class="quiz-option" onclick="selectOption(this, 'level', 'beginner')">
+                                    <strong>Beginner</strong> - Just starting out or playing casually
+                                </div>
+                                <div class="quiz-option" onclick="selectOption(this, 'level', 'intermediate')">
+                                    <strong>Intermediate</strong> - Playing regularly, developing technique
+                                </div>
+                                <div class="quiz-option" onclick="selectOption(this, 'level', 'advanced')">
+                                    <strong>Advanced</strong> - Competitive player with refined skills
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question">
+                            <h3>2. What's your playing style?</h3>
+                            <div class="quiz-options">
+                                <div class="quiz-option" onclick="selectOption(this, 'style', 'baseline')">
+                                    <strong>Baseline Player</strong> - Groundstrokes and consistency
+                                </div>
+                                <div class="quiz-option" onclick="selectOption(this, 'style', 'allcourt')">
+                                    <strong>All-Court Player</strong> - Mix of baseline and net play
+                                </div>
+                                <div class="quiz-option" onclick="selectOption(this, 'style', 'aggressive')">
+                                    <strong>Aggressive Player</strong> - Power, serve-and-volley
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question">
+                            <h3>3. What's your priority?</h3>
+                            <div class="quiz-options">
+                                <div class="quiz-option" onclick="selectOption(this, 'priority', 'power')">
+                                    <strong>Power</strong> - I want more pace on my shots
+                                </div>
+                                <div class="quiz-option" onclick="selectOption(this, 'priority', 'control')">
+                                    <strong>Control</strong> - I want precision and placement
+                                </div>
+                                <div class="quiz-option" onclick="selectOption(this, 'priority', 'comfort')">
+                                    <strong>Comfort</strong> - I need arm-friendly options
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <center>
+                        <button class="quiz-button" onclick="getRecommendation()">Get My Recommendation</button>
+                    </center>
+
+                    <div id="quizResult" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Player Guide Tab -->
+            <div id="guide" class="tab-content">
+                <div class="flowchart">
+                    <div class="flow-node">
+                        START: Assess Your Playing Level
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-node question">
+                        Are you new to tennis or playing recreationally?
+                    </div>
+                    <div class="flow-arrow">↓ YES</div>
+                    <div class="flow-node answer">
+                        BEGINNER LEVEL → Lightweight, Oversized Head, Power-Oriented
+                    </div>
+                    <div class="flow-arrow">↓ NO</div>
+                    <div class="flow-node question">
+                        Do you play regularly with consistent technique?
+                    </div>
+                    <div class="flow-arrow">↓ YES</div>
+                    <div class="flow-node answer">
+                        INTERMEDIATE LEVEL → Midweight, Mid-Plus Head, Balanced
+                    </div>
+                    <div class="flow-arrow">↓ NO</div>
+                    <div class="flow-node answer">
+                        ADVANCED LEVEL → Control-Oriented, Standard Head, Precision
+                    </div>
+                </div>
+
+                <div class="level-section">
+                    <div class="level-header">
+                        <h2>🌟 Beginner Players</h2>
+                        <p>Just starting out or playing casually (0-2 years experience)</p>
+                    </div>
+                    
+                    <div class="criteria-list">
+                        <div class="criterion">
+                            <strong>Head Size:</strong>
+                            105-115 sq in (oversized for larger sweet spot)
+                        </div>
+                        <div class="criterion">
+                            <strong>Weight:</strong>
+                            9-10 oz (lightweight for easy maneuverability)
+                        </div>
+                        <div class="criterion">
+                            <strong>Balance:</strong>
+                            Head-heavy (more power with less effort)
+                        </div>
+                        <div class="criterion">
+                            <strong>Length:</strong>
+                            27.5-28 inches (extended for reach)
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 25px 0 15px 0; color: #667eea;">Top Recommendations:</h3>
+
+                    <div class="recommendation-card">
+                        <h3>Wilson Clash 108 V2</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">108 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">9.7 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Heavy</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$200-250</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Revolutionary flexibility provides excellent comfort and power. The forgiving sweet spot helps beginners develop confidence. Perfect for players transitioning from casual to regular play.</p>
+                        <div>
+                            <span class="best-for">Comfort</span>
+                            <span class="best-for">Power</span>
+                            <span class="best-for">Arm-Friendly</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Babolat Drive 115</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">115 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">9.2 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Heavy</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$130-180</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Woofer technology creates a larger sweet spot and dampens vibrations. Extremely forgiving for off-center hits. Great value for money and one of the lightest options available.</p>
+                        <div>
+                            <span class="best-for">Forgiveness</span>
+                            <span class="best-for">Light Weight</span>
+                            <span class="best-for">Budget-Friendly</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Head Ti.S6</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">115 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">8.9 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Heavy</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$80-120</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Titanium construction makes it incredibly light yet stable. Perfect for seniors or players with limited strength. The oversized head provides maximum confidence on every shot.</p>
+                        <div>
+                            <span class="best-for">Ultra-Light</span>
+                            <span class="best-for">Seniors</span>
+                            <span class="best-for">Best Value</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Yonex Ezone 108</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">108 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">9.7 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Heavy</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$210-250</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Isometric head shape increases sweet spot by 7%. Excellent spin potential with Spin Boost technology. Great all-around option with premium feel.</p>
+                        <div>
+                            <span class="best-for">Spin</span>
+                            <span class="best-for">Sweet Spot</span>
+                            <span class="best-for">Premium Feel</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-section">
+                    <div class="level-header">
+                        <h2>🚀 Intermediate Players</h2>
+                        <p>Regular players developing technique (2-5 years experience)</p>
+                    </div>
+                    
+                    <div class="criteria-list">
+                        <div class="criterion">
+                            <strong>Head Size:</strong>
+                            98-104 sq in (mid-plus for control and power balance)
+                        </div>
+                        <div class="criterion">
+                            <strong>Weight:</strong>
+                            10-11.5 oz (moderate weight for stability)
+                        </div>
+                        <div class="criterion">
+                            <strong>Balance:</strong>
+                            Even to slightly head-light (versatility)
+                        </div>
+                        <div class="criterion">
+                            <strong>String Pattern:</strong>
+                            16x19 (balance of spin and control)
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 25px 0 15px 0; color: #667eea;">Top Recommendations:</h3>
+
+                    <div class="recommendation-card">
+                        <h3>Wilson Blade 100 V9</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">100 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">10.8 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Even</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$220-270</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> The ultimate all-court weapon. Exceptional control and feel with enough power for modern tennis. DirectConnect technology provides incredible feedback. Used by professionals but accessible to advancing intermediates.</p>
+                        <div>
+                            <span class="best-for">Control</span>
+                            <span class="best-for">Feel</span>
+                            <span class="best-for">All-Court Game</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Babolat Pure Aero 98</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">98 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">11.2 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$230-280</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> The spin machine Rafael Nadal uses (in pro version). Aeromodular beam creates massive spin potential. Perfect for aggressive baseline players who want to dominate rallies with heavy topspin.</p>
+                        <div>
+                            <span class="best-for">Spin</span>
+                            <span class="best-for">Power</span>
+                            <span class="best-for">Baseline Game</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Head Radical MP</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">98 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">10.6 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$220-270</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Andy Murray's choice for precision and control. Graphene 360+ technology provides stability and power. Excellent for players who rely on placement and consistency rather than raw power.</p>
+                        <div>
+                            <span class="best-for">Precision</span>
+                            <span class="best-for">Spin Friendly</span>
+                            <span class="best-for">Versatile</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Yonex VCore 100</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">100 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">10.6 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$220-260</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Aerodynamic frame design increases racquet head speed. 2G-Namd Flex Force adds stability on off-center hits. Great choice for intermediate players wanting to add spin to their game.</p>
+                        <div>
+                            <span class="best-for">Spin</span>
+                            <span class="best-for">Maneuverability</span>
+                            <span class="best-for">Control</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Prince Phantom 100</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">100 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">10.8 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$200-240</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Textreme technology provides a unique combination of power and control. Excellent for all-court players. Often overlooked but offers premium performance at a competitive price.</p>
+                        <div>
+                            <span class="best-for">Value</span>
+                            <span class="best-for">All-Court</span>
+                            <span class="best-for">Power + Control</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-section">
+                    <div class="level-header">
+                        <h2>🏆 Advanced/Competitive Players</h2>
+                        <p>Tournament players with refined technique (5+ years experience)</p>
+                    </div>
+                    
+                    <div class="criteria-list">
+                        <div class="criterion">
+                            <strong>Head Size:</strong>
+                            95-98 sq in (control and precision)
+                        </div>
+                        <div class="criterion">
+                            <strong>Weight:</strong>
+                            11.5-12.5 oz (heavy for stability and power)
+                        </div>
+                        <div class="criterion">
+                            <strong>Balance:</strong>
+                            Head-light (maneuverability and control)
+                        </div>
+                        <div class="criterion">
+                            <strong>String Pattern:</strong>
+                            16x19 or 18x20 (control-oriented)
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 25px 0 15px 0; color: #667eea;">Top Recommendations:</h3>
+
+                    <div class="recommendation-card">
+                        <h3>Wilson Pro Staff RF97 Autograph</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">97 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">12.6 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">9 pts Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$260-310</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Roger Federer's racquet. The gold standard for advanced players who can handle its weight. Unparalleled feel, precision, and power for those with proper technique. Dense string pattern (18x20) provides maximum control.</p>
+                        <div>
+                            <span class="best-for">Ultimate Control</span>
+                            <span class="best-for">Feel</span>
+                            <span class="best-for">Precision</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Babolat Pure Strike 98</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">98 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">11.4 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">7 pts Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$230-280</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Dominic Thiem's weapon of choice. Perfect blend of control and power for aggressive baseliners. Hybrid frame construction delivers surgical precision with explosive potential.</p>
+                        <div>
+                            <span class="best-for">Control</span>
+                            <span class="best-for">Aggressive Play</span>
+                            <span class="best-for">Modern Game</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Head Prestige MP</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">98 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">11.3 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">7 pts Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$230-280</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> The ultimate control racquet with legendary feel. Favored by players who emphasize placement and consistency. Dense 18x20 string pattern for surgical precision on every shot.</p>
+                        <div>
+                            <span class="best-for">Maximum Control</span>
+                            <span class="best-for">Classic Feel</span>
+                            <span class="best-for">Touch Players</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Yonex VCore Pro 97</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">97 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">11.7 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">6 pts Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$230-270</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Stan Wawrinka and Angelique Kerber's choice. Exceptional stability and control with enough power for winners. Isometric head shape adds forgiveness to a control-oriented frame.</p>
+                        <div>
+                            <span class="best-for">Stability</span>
+                            <span class="best-for">Control</span>
+                            <span class="best-for">Spin Control</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <h3>Dunlop CX 200 Tour</h3>
+                        <div class="specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Head Size</span>
+                                <span class="spec-value">98 sq in</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">11.3 oz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Balance</span>
+                                <span class="spec-value">7 pts Head Light</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Price Range</span>
+                                <span class="spec-value">$200-250</span>
+                            </div>
+                        </div>
+                        <p><strong>Why it's great:</strong> Kevin Anderson's racquet. Excellent value for advanced players. Sonic Core technology dampens vibrations while maintaining feel. Great alternative to more expensive options.</p>
+                        <div>
+                            <span class="best-for">Value</span>
+                            <span class="best-for">Comfort</span>
+                            <span class="best-for">Control</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand Comparison Tab -->
+            <div id="comparison" class="tab-content">
+                <h2 style="color: #667eea; margin-bottom: 30px;">Brand Philosophy & Strengths</h2>
+                
+                <div class="comparison-grid">
+                    <div class="brand-card">
+                        <h4>Wilson</h4>
+                        <div class="rating">★★★★★</div>
+                        <p><strong>Philosophy:</strong> Performance and innovation for all levels</p>
+                        <p><strong>Best Known For:</strong> Feel and control</p>
+                        <p><strong>Popular Lines:</strong> Pro Staff (control), Blade (feel), Clash (comfort)</p>
+                        <p><strong>Pro Players:</strong> Roger Federer, Serena Williams, Stefanos Tsitsipas</p>
+                        <p><strong>Sweet Spot:</strong> All levels, especially advanced control players</p>
+                    </div>
+
+                    <div class="brand-card">
+                        <h4>Babolat</h4>
+                        <div class="rating">★★★★★</div>
+                        <p><strong>Philosophy:</strong> Power and spin for modern tennis</p>
+                        <p><strong>Best Known For:</strong> Spin technology</p>
+                        <p><strong>Popular Lines:</strong> Pure Aero (spin), Pure Drive (power), Pure Strike (control)</p>
+                        <p><strong>Pro Players:</strong> Rafael Nadal, Carlos Alcaraz, Félix Auger-Aliassime</p>
+                        <p><strong>Sweet Spot:</strong> Aggressive baseliners, spin players</p>
+                    </div>
+
+                    <div class="brand-card">
+                        <h4>Head</h4>
+                        <div class="rating">★★★★★</div>
+                        <p><strong>Philosophy:</strong> Technology-driven performance</p>
+                        <p><strong>Best Known For:</strong> Graphene technology, stability</p>
+                        <p><strong>Popular Lines:</strong> Prestige (control), Radical (spin), Speed (all-court)</p>
+                        <p><strong>Pro Players:</strong> Novak Djokovic, Alexander Zverev, Matteo Berrettini</p>
+                        <p><strong>Sweet Spot:</strong> All-court players, control seekers</p>
+                    </div>
+
+                    <div class="brand-card">
+                        <h4>Yonex</h4>
+                        <div class="rating">★★★★☆</div>
+                        <p><strong>Philosophy:</strong> Precision engineering, arm-friendly</p>
+                        <p><strong>Best Known For:</strong> Isometric head shape, comfort</p>
+                        <p><strong>Popular Lines:</strong> Ezone (comfort), VCore (spin), VCore Pro (control)</p>
+                        <p><strong>Pro Players:</strong> Naomi Osaka, Stan Wawrinka, Angelique Kerber</p>
+                        <p><strong>Sweet Spot:</strong> Players prioritizing comfort and spin</p>
+                    </div>
+
+                    <div class="brand-card">
+                        <h4>Prince</h4>
+                        <div class="rating">★★★★☆</div>
+                        <p><strong>Philosophy:</strong> Innovation and value</p>
+                        <p><strong>Best Known For:</strong> Textreme technology</p>
+                        <p><strong>Popular Lines:</strong> Phantom (all-court), Beast (power)</p>
+                        <p><strong>Pro Players:</strong> Lucas Pouille, María Sakkari</p>
+                        <p><strong>Sweet Spot:</strong> Value-conscious intermediate players</p>
+                    </div>
+
+                    <div class="brand-card">
+                        <h4>Dunlop</h4>
+                        <div class="rating">★★★★☆</div>
+                        <p><strong>Philosophy:</strong> Heritage with modern tech</p>
+                        <p><strong>Best Known For:</strong> Sonic Core dampening</p>
+                        <p><strong>Popular Lines:</strong> CX (control), FX (power)</p>
+                        <p><strong>Pro Players:</strong> Kevin Anderson, Jamie Murray</p>
+                        <p><strong>Sweet Spot:</strong> Advanced players seeking value</p>
+                    </div>
+                </div>
+
+                <h2 style="color: #667eea; margin: 50px 0 30px 0;">Head-to-Head Comparison</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Best Choice</th>
+                            <th>Runner-Up</th>
+                            <th>Budget Option</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Beginner Power</strong></td>
+                            <td>Babolat Drive 115</td>
+                            <td>Wilson Clash 108</td>
+                            <td>Head Ti.S6</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Beginner Comfort</strong></td>
+                            <td>Wilson Clash 108</td>
+                            <td>Yonex Ezone 108</td>
+                            <td>Prince Textreme Tour 100L</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intermediate All-Court</strong></td>
+                            <td>Wilson Blade 100</td>
+                            <td>Head Radical MP</td>
+                            <td>Prince Phantom 100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intermediate Spin</strong></td>
+                            <td>Babolat Pure Aero 98</td>
+                            <td>Yonex VCore 100</td>
+                            <td>Head Radical MP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advanced Control</strong></td>
+                            <td>Wilson Pro Staff RF97</td>
+                            <td>Head Prestige MP</td>
+                            <td>Dunlop CX 200 Tour</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advanced Power</strong></td>
+                            <td>Babolat Pure Strike 98</td>
+                            <td>Yonex VCore Pro 97</td>
+                            <td>Prince Phantom Pro 100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Arm-Friendly</strong></td>
+                            <td>Wilson Clash (any)</td>
+                            <td>Yonex Ezone (any)</td>
+                            <td>Head Ti.S6</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best Value</strong></td>
+                            <td>Prince Phantom 100</td>
+                            <td>Dunlop CX 200</td>
+                            <td>Head Ti.S6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Detailed Specs Tab -->
+            <div id="specs" class="tab-content">
+                <h2 style="color: #667eea; margin-bottom: 30px;">Complete Specifications Comparison</h2>
+                
+                <h3 style="margin: 30px 0 20px 0; color: #1a202c;">Beginner Racquets</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Head Size</th>
+                            <th>Weight</th>
+                            <th>Length</th>
+                            <th>Balance</th>
+                            <th>String Pattern</th>
+                            <th>Swing Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wilson Clash 108 V2</td>
+                            <td>108 sq in</td>
+                            <td>9.7 oz</td>
+                            <td>27.25"</td>
+                            <td>4 pts HL</td>
+                            <td>16x19</td>
+                            <td>310</td>
+                        </tr>
+                        <tr>
+                            <td>Babolat Drive 115</td>
+                            <td>115 sq in</td>
+                            <td>9.2 oz</td>
+                            <td>27"</td>
+                            <td>7 pts HH</td>
+                            <td>16x19</td>
+                            <td>285</td>
+                        </tr>
+                        <tr>
+                            <td>Head Ti.S6</td>
+                            <td>115 sq in</td>
+                            <td>8.9 oz</td>
+                            <td>27.75"</td>
+                            <td>8 pts HH</td>
+                            <td>16x19</td>
+                            <td>278</td>
+                        </tr>
+                        <tr>
+                            <td>Yonex Ezone 108</td>
+                            <td>108 sq in</td>
+                            <td>9.7 oz</td>
+                            <td>27"</td>
+                            <td>5 pts HH</td>
+                            <td>16x19</td>
+                            <td>305</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 40px 0 20px 0; color: #1a202c;">Intermediate Racquets</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Head Size</th>
+                            <th>Weight</th>
+                            <th>Length</th>
+                            <th>Balance</th>
+                            <th>String Pattern</th>
+                            <th>Swing Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wilson Blade 100 V9</td>
+                            <td>100 sq in</td>
+                            <td>10.8 oz</td>
+                            <td>27"</td>
+                            <td>4 pts HL</td>
+                            <td>16x19</td>
+                            <td>324</td>
+                        </tr>
+                        <tr>
+                            <td>Babolat Pure Aero 98</td>
+                            <td>98 sq in</td>
+                            <td>11.2 oz</td>
+                            <td>27"</td>
+                            <td>7 pts HL</td>
+                            <td>16x19</td>
+                            <td>326</td>
+                        </tr>
+                        <tr>
+                            <td>Head Radical MP</td>
+                            <td>98 sq in</td>
+                            <td>10.6 oz</td>
+                            <td>27"</td>
+                            <td>8 pts HL</td>
+                            <td>16x19</td>
+                            <td>318</td>
+                        </tr>
+                        <tr>
+                            <td>Yonex VCore 100</td>
+                            <td>100 sq in</td>
+                            <td>10.6 oz</td>
+                            <td>27"</td>
+                            <td>6 pts HL</td>
+                            <td>16x19</td>
+                            <td>320</td>
+                        </tr>
+                        <tr>
+                            <td>Prince Phantom 100</td>
+                            <td>100 sq in</td>
+                            <td>10.8 oz</td>
+                            <td>27"</td>
+                            <td>5 pts HL</td>
+                            <td>16x19</td>
+                            <td>322</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 40px 0 20px 0; color: #1a202c;">Advanced Racquets</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Head Size</th>
+                            <th>Weight</th>
+                            <th>Length</th>
+                            <th>Balance</th>
+                            <th>String Pattern</th>
+                            <th>Swing Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wilson Pro Staff RF97</td>
+                            <td>97 sq in</td>
+                            <td>12.6 oz</td>
+                            <td>27"</td>
+                            <td>9 pts HL</td>
+                            <td>16x19</td>
+                            <td>338</td>
+                        </tr>
+                        <tr>
+                            <td>Babolat Pure Strike 98</td>
+                            <td>98 sq in</td>
+                            <td>11.4 oz</td>
+                            <td>27"</td>
+                            <td>7 pts HL</td>
+                            <td>16x19</td>
+                            <td>328</td>
+                        </tr>
+                        <tr>
+                            <td>Head Prestige MP</td>
+                            <td>98 sq in</td>
+                            <td>11.3 oz</td>
+                            <td>27"</td>
+                            <td>7 pts HL</td>
+                            <td>18x20</td>
+                            <td>324</td>
+                        </tr>
+                        <tr>
+                            <td>Yonex VCore Pro 97</td>
+                            <td>97 sq in</td>
+                            <td>11.7 oz</td>
+                            <td>27"</td>
+                            <td>6 pts HL</td>
+                            <td>16x19</td>
+                            <td>332</td>
+                        </tr>
+                        <tr>
+                            <td>Dunlop CX 200 Tour</td>
+                            <td>98 sq in</td>
+                            <td>11.3 oz</td>
+                            <td>27"</td>
+                            <td>7 pts HL</td>
+                            <td>16x19</td>
+                            <td>325</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="background: #f8fafc; padding: 30px; border-radius: 15px; margin-top: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">Understanding the Specs</h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #1a202c;">Head Size:</strong>
+                        <p>Larger heads (105-115 sq in) = more power and forgiveness. Smaller heads (95-98 sq in) = more control and precision.</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #1a202c;">Weight:</strong>
+                        <p>Lighter racquets (9-10 oz) = easier to swing, less power. Heavier racquets (11-12+ oz) = more power and stability, harder to maneuver.</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #1a202c;">Balance:</strong>
+                        <p>Head-heavy = more power from baseline. Head-light = better maneuverability and control at net.</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #1a202c;">String Pattern:</strong>
+                        <p>16x19 = more spin and power. 18x20 = more control and durability.</p>
+                    </div>
+
+                    <div>
+                        <strong style="color: #1a202c;">Swing Weight:</strong>
+                        <p>Lower (280-310) = easy to swing, less stable. Higher (320-340+) = more stable, requires good technique.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let quizAnswers = {
+            level: null,
+            style: null,
+            priority: null
+        };
+
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function selectOption(element, category, value) {
+            // Remove selected class from siblings
+            const siblings = element.parentElement.children;
+            for (let sibling of siblings) {
+                sibling.classList.remove('selected');
+            }
+            
+            // Add selected class to clicked element
+            element.classList.add('selected');
+            
+            // Store answer
+            quizAnswers[category] = value;
+        }
+
+        function getRecommendation() {
+            if (!quizAnswers.level || !quizAnswers.style || !quizAnswers.priority) {
+                alert('Please answer all questions before getting your recommendation!');
+                return;
+            }
+
+            const recommendations = {
+                beginner: {
+                    power: {
+                        racquet: "Babolat Drive 115",
+                        specs: "115 sq in, 9.2 oz, Head Heavy",
+                        reason: "Perfect for generating easy power with minimal effort. The oversized head and lightweight design help you develop confidence while learning."
+                    },
+                    control: {
+                        racquet: "Wilson Clash 108 V2",
+                        specs: "108 sq in, 9.7 oz, Head Heavy",
+                        reason: "Flexible frame provides control without sacrificing power. Great for learning proper technique while getting help from the racquet."
+                    },
+                    comfort: {
+                        racquet: "Yonex Ezone 108",
+                        specs: "108 sq in, 9.7 oz, Head Heavy",
+                        reason: "Exceptional comfort with isometric technology. Perfect for preventing arm fatigue while you build your game."
+                    }
+                },
+                intermediate: {
+                    baseline: {
+                        racquet: "Babolat Pure Aero 98",
+                        specs: "98 sq in, 11.2 oz, Head Light",
+                        reason: "The spin machine that helps dominate from the baseline. Perfect for players developing their groundstroke game."
+                    },
+                    allcourt: {
+                        racquet: "Wilson Blade 100 V9",
+                        specs: "100 sq in, 10.8 oz, Even Balance",
+                        reason: "The ultimate versatile racquet. Excellent feel and control for all-court play with enough power for aggressive shots."
+                    },
+                    aggressive: {
+                        racquet: "Head Radical MP",
+                        specs: "98 sq in, 10.6 oz, Head Light",
+                        reason: "Great for players who like to dictate points. Excellent spin potential and control for aggressive tactics."
+                    }
+                },
+                advanced: {
+                    power: {
+                        racquet: "Babolat Pure Strike 98",
+                        specs: "98 sq in, 11.4 oz, Head Light",
+                        reason: "Perfect blend of control and power for advanced players. Delivers precision without sacrificing firepower."
+                    },
+                    control: {
+                        racquet: "Wilson Pro Staff RF97 Autograph",
+                        specs: "97 sq in, 12.6 oz, Head Light",
+                        reason: "The ultimate control racquet. Requires excellent technique but rewards you with unmatched feel and precision."
+                    },
+                    comfort: {
+                        racquet: "Yonex VCore Pro 97",
+                        specs: "97 sq in, 11.7 oz, Head Light",
+                        reason: "Advanced performance with Yonex's legendary comfort. Great for players who need both control and arm protection."
+                    }
+                }
+            };
+
+            let recommendation;
+            if (quizAnswers.level === 'beginner') {
+                recommendation = recommendations.beginner[quizAnswers.priority];
+            } else if (quizAnswers.level === 'intermediate') {
+                recommendation = recommendations.intermediate[quizAnswers.style];
+            } else {
+                recommendation = recommendations.advanced[quizAnswers.priority];
+            }
+
+            const resultHTML = `
+                <div class="result-box">
+                    <h2>Your Perfect Match!</h2>
+                    <h1 style="font-size: 2.5em; margin: 20px 0;">${recommendation.racquet}</h1>
+                    <p style="font-size: 1.2em; margin-bottom: 10px;">${recommendation.specs}</p>
+                </div>
+                <div class="recommendation-card">
+                    <h3>Why this racquet is perfect for you:</h3>
+                    <p style="font-size: 1.1em; line-height: 1.6;">${recommendation.reason}</p>
+                    <p style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+                        <strong>Next Steps:</strong> Try this racquet at your local tennis shop or consider demo programs. 
+                        Most shops offer demo programs where you can test racquets before buying!
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('quizResult').innerHTML = resultHTML;
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
